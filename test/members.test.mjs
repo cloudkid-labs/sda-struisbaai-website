@@ -94,16 +94,13 @@ describe('the Test site tab', async () => {
   const { MEMBERS_SITES } = await import('../src/data/site.ts');
   const { readFileSync } = await import('node:fs');
   const wrangler = readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
-  const tfVars = readFileSync(new URL('../terraform/variables.tf', import.meta.url), 'utf8');
+  // Production infrastructure is deliberately not part of this repository yet.
 
-  test('points at the hosts the two Workers actually serve', () => {
+  test('points at the Struisbaai devtest host and leaves production unset', () => {
     const test = new URL(MEMBERS_SITES.test);
-    const live = new URL(MEMBERS_SITES.live);
     assert.equal(test.origin, MEMBERS_SITES.test, 'an origin, no path');
-    assert.equal(live.origin, MEMBERS_SITES.live, 'an origin, no path');
-    assert.match(wrangler, new RegExp(`"pattern": "${test.host.replace(/\./g, '\\.')}"`), 'devtest route');
-    assert.match(wrangler, new RegExp(`"pattern": "${live.host.replace(/\./g, '\\.')}"`), 'production route');
-    assert.match(tfVars, new RegExp(`default\\s*=\\s*"${test.origin.replace(/\./g, '\\.')}"`), 'OAuth client lists the test origin');
+    assert.ok(wrangler.includes(`\"pattern\": \"${test.host}\"`), 'devtest route');
+    assert.equal(MEMBERS_SITES.live, '', 'production host is not confirmed');
   });
 
   test('its Sign in target starts Google sign-in and lands on /members/', async () => {

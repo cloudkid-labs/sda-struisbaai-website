@@ -328,9 +328,15 @@ function TestSitePanel() {
       <section aria-labelledby="ts-h" className={cardClass}>
         <h2 id="ts-h" className="font-serif text-[26px] font-medium text-ink">{t.onTestHeading}</h2>
         <p className="mt-2 max-w-[620px] text-[15px] leading-relaxed text-slate">{t.onTestIntro}</p>
-        <a href={`${MEMBERS_SITES.live}/members/`} className={`${buttonSecondary} mt-5`}>
-          {t.onTestLive}
-        </a>
+        {MEMBERS_SITES.live ? (
+          <a href={`${MEMBERS_SITES.live}/members/`} className={`${buttonSecondary} mt-5`}>
+            {t.onTestLive}
+          </a>
+        ) : (
+          <p className="mt-5 text-sm text-slate-muted">
+            {lang === 'af' ? 'Die produksiewebwerf is nog nie opgestel nie.' : 'The production site is not configured yet.'}
+          </p>
+        )}
       </section>
     );
   }

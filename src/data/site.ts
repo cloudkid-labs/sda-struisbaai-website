@@ -15,12 +15,12 @@ const ADDRESS = {
 } as const;
 
 /**
- * Origins for the members area's "Test site" tab. The test origin must match
- * terraform/ `devtest_origin` (the OAuth client lists it).
+ * Origins for the members area's test-site link. The live origin stays empty
+ * until the Struisbaai production domain is confirmed.
  */
 export const MEMBERS_SITES = {
-  test: 'https://tygerberg-sda.cloudkid.link',
-  live: 'https://sdatygerberg.co.za',
+  test: 'https://struisbaai-sda.cloudkid.link',
+  live: '',
 } as const;
 
 export const SITE = {
@@ -64,8 +64,7 @@ export type SocialLink = { id: 'youtube' | 'instagram' | 'facebook'; label: stri
 export const SOCIAL_LINKS: readonly SocialLink[] = [
   ...(FEATURE_FLAGS.youtubeSection ? [{ id: 'youtube' as const, label: 'YouTube', url: SITE.youtubeStreamsUrl }] : []),
   { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/sdatygerberg' },
-  // TODO(board): confirm SDATygerbergStream is the church's main Facebook page,
-  // not a stream-only page. URL is verbatim from the brief.
+  // These inherited links are pending confirmation for Struisbaai.
   { id: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/SDATygerbergStream' },
 ];
 
