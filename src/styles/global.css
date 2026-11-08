@@ -134,3 +134,7 @@
     top: 8px;
   }
 }
+
+@layer components {
+  .sda-visit__map .leaflet-control-attribution { display: none; }
+}
