@@ -1,3 +1,4 @@
+import { isCmsSlug, isSafeCmsHref } from '@cloudkid-labs/sda-church-site-core/cms';
 import {
   BLOCK_TYPES,
   WEEKDAYS_AF,
@@ -87,19 +88,12 @@ export function isIsoDate(value: unknown): value is string {
 }
 
 export function isValidSlug(slug: unknown): slug is string {
-  return typeof slug === 'string' && slug.length <= 60 && SLUG_RE.test(slug) && !RESERVED_SLUGS.has(slug);
+  return isCmsSlug(slug) && !RESERVED_SLUGS.has(slug);
 }
 
 /** `/connect/`, `/pastoral-counselling/#x`, or an https URL. Never `javascript:`. */
 export function isSafeHref(href: unknown): href is string {
-  if (typeof href !== 'string' || href.length > 300) return false;
-  if (/^\/(?!\/)[A-Za-z0-9\-._~/?#=&%]*$/.test(href)) return true;
-  try {
-    const url = new URL(href);
-    return url.protocol === 'https:';
-  } catch {
-    return false;
-  }
+  return typeof href === 'string' && href.length <= 300 && isSafeCmsHref(href);
 }
 
 class Checker {

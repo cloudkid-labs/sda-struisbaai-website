@@ -1,8 +1,9 @@
 ---
+import '@cloudkid-labs/sda-church-site-core/styles.css';
+import { ChurchMap } from '@cloudkid-labs/sda-church-site-core/react';
+import { CHURCH_SITE } from '../data/churchSite';
 import { SITE } from '../data/site';
-import { withBase } from '../lib/base';
 
-const markerUrl = withBase('/map-marker.svg');
 const indexable = import.meta.env.PUBLIC_INDEXABLE !== 'false';
 const canonical = new URL('/map/', Astro.site);
 ---
@@ -15,19 +16,6 @@ const canonical = new URL('/map/', Astro.site);
     <title>{SITE.fullName} — Map</title>
     <link rel="canonical" href={canonical.href} />
     {!indexable && <meta name="robots" content="noindex,nofollow" />}
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script
-      is:inline
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"></script>
     <style is:global>
       html,
       body {
@@ -35,57 +23,24 @@ const canonical = new URL('/map/', Astro.site);
         padding: 0;
         height: 100%;
       }
-      #map {
+      .map-page,
+      .map-page .sda-map-shell {
         width: 100%;
         height: 100%;
-        background: #eee7d8;
-      }
-      .leaflet-popup-content {
-        color: #17252e;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        font-size: 13.5px;
-      }
-      .leaflet-popup-content b {
-        color: #0b3d54;
-      }
-      .church-marker {
-        border-radius: 50%;
-        background: #f6f2e9;
-        box-shadow: 0 2px 8px rgba(7, 42, 59, 0.45);
+        min-height: 100%;
+        border-radius: 0;
       }
     </style>
   </head>
   <body>
-    <div id="map" role="region" aria-label="Map to Struisbaai Library Hall"></div>
-    <script
-      is:inline
-      define:vars={{ lat: SITE.lat, lng: SITE.lng, name: SITE.fullName, address: SITE.address, markerUrl }}
-    >
-      const map = L.map('map', {
-        scrollWheelZoom: false,
-        dragging: !L.Browser.mobile,
-        tap: false,
-        attributionControl: true,
-      }).setView([lat, lng], 16);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
-
-      const icon = L.icon({
-        iconUrl: markerUrl,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
-        popupAnchor: [0, -18],
-        className: 'church-marker',
-      });
-      const popup = document.createElement('div');
-      const heading = document.createElement('b');
-      heading.textContent = name;
-      const line = document.createElement('br');
-      popup.append(heading, line, document.createTextNode(address));
-      L.marker([lat, lng], { icon, alt: name }).addTo(map).bindPopup(popup).openPopup();
-    </script>
+    <ChurchMap
+      lat={CHURCH_SITE.location!.lat}
+      lng={CHURCH_SITE.location!.lng}
+      name={SITE.fullName}
+      address={SITE.address}
+      markerUrl={CHURCH_SITE.location!.markerUrl}
+      className="map-page"
+      client:load
+    />
   </body>
 </html>
