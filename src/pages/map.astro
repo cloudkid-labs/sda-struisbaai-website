@@ -27,11 +27,9 @@ const canonical = new URL('/map/', Astro.site);
         display: flex;
         flex-direction: column;
       }
-      .map-page,
-      .map-page .sda-map-shell {
-        flex: 1 1 auto;
+      .map-page {
         width: 100%;
-        height: auto;
+        flex: 1;
         min-height: 0;
         border-radius: 0;
       }
@@ -39,16 +37,10 @@ const canonical = new URL('/map/', Astro.site);
         display: none;
       }
       .map-attribution {
-        flex: none;
         margin: 0;
         padding: 4px 8px;
-        color: #536578;
-        font: 11px/1.5 Arial, sans-serif;
         text-align: right;
-      }
-      .map-attribution a {
-        color: #0078a8;
-        text-decoration: underline;
+        font: 12px/16px system-ui, sans-serif;
       }
     </style>
   </head>
