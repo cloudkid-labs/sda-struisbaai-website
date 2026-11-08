@@ -67,9 +67,6 @@ export type SocialLink = { id: 'youtube' | 'instagram' | 'facebook'; label: stri
 
 export const SOCIAL_LINKS: readonly SocialLink[] = [
   ...(FEATURE_FLAGS.youtubeSection ? [{ id: 'youtube' as const, label: 'YouTube', url: SITE.youtubeStreamsUrl }] : []),
-  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/sdatygerberg' },
-  // These inherited links are pending confirmation for Struisbaai.
-  { id: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/SDATygerbergStream' },
 ];
 
 /**

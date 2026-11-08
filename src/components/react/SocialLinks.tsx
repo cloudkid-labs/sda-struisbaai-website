@@ -18,6 +18,8 @@ export function SocialLinks({
   newTab: string;
   variant: 'navy' | 'light';
 }) {
+  if (SOCIAL_LINKS.length === 0) return null;
+
   const labelClass =
     variant === 'navy'
       ? 'mb-2 text-xs font-bold uppercase tracking-[.08em] text-blue-muted'
