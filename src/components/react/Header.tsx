@@ -86,7 +86,7 @@ export function Header() {
               {lang === 'af' ? 'Sewendedag Adventiste Kerk' : 'Seventh-day Adventist Church'}
             </div>}
           </div>}
-        </a>
+        </a>}
 
         {isVisible(UI_CONFIG, 'site.header.navigation') && <nav className="hidden items-center gap-4 text-sm font-medium lg:flex">
           {visibleNavLinks.map((link) => (
