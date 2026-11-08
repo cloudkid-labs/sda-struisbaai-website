@@ -11,9 +11,9 @@ const config = JSON.parse(
 );
 
 describe('Struisbaai deployment isolation', () => {
-  test('the default Worker has no production route or Tygerberg data bindings', () => {
+  test('the default Worker is bound to the Struisbaai production domain', () => {
     assert.equal(config.name, 'struisbaai-sda-website');
-    assert.ok(!('routes' in config));
+    assert.deepEqual(config.routes, [{ pattern: 'sdastruisbaai.co.za', custom_domain: true }]);
     assert.ok(!('send_email' in config));
     assert.ok(!('r2_buckets' in config));
     assert.equal(config.vars.BOARD_MAIL, 'off');

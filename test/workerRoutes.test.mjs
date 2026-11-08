@@ -129,7 +129,7 @@ describe('worker branches — C-60, C-63', () => {
   test('/api/live-status answers JSON with a source and cached flag', async () => {
     const res = await worker.fetch(new Request('https://x/api/live-status'), env(), ctx());
     const json = await res.json();
-    assert.ok(['outside-window', 'not-configured'].includes(json.source), json.source);
+    assert.equal(json.source, 'feature-disabled');
     assert.equal(json.cached, false);
     assert.match(res.headers.get('cache-control') ?? '', /no-store/i);
     assert.deepEqual(assetHits, []);

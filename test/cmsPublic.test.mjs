@@ -4,6 +4,8 @@ import { r2Mock } from './r2Mock.mjs';
 import { seedEvents, seedHeads, seedPages } from '../src/lib/cms/seed.ts';
 import { publicEvents, scriptJson } from '../src/lib/cms/public.ts';
 import { johannesburgDate, isExpired } from '../src/lib/cms/time.ts';
+import { isVisible } from '@cloudkid-labs/sda-church-site-core';
+import { UI_CONFIG } from '../src/data/uiConfig.ts';
 
 /*
  * What visitors get from the CMS (C-70): live items only, never a draft and
@@ -22,16 +24,17 @@ const RENDER = { week: renderWeekSection, events: renderEventsSection, about: re
 /** The homepage as the build would emit it, reduced to what the Worker edits. */
 function builtHome() {
   const payload = buildHomePayload();
+  const week = isVisible(UI_CONFIG, 'home.this-week') ? renderWeekSection(payload) : '';
   return `<!doctype html><html lang="af"><head><title>Home</title></head><body>
 <script type="application/json" id="cms-home">${scriptJson(payload)}</script>
-<astro-island><div><main>${renderWeekSection(payload)}${renderEventsSection(payload)}${renderAboutSection(payload)}</main></div></astro-island>
+<astro-island><div><main>${week}${renderEventsSection(payload)}${renderAboutSection(payload)}</main></div></astro-island>
 </body></html>`;
 }
 
 function builtShell() {
-  return `<!doctype html><html lang="af"><head><title>Tygerberg SDA Kerk</title>
-<meta name="description" content="Tygerberg SDA Kerk"><link rel="canonical" href="https://sdatygerberg.co.za/page-shell/">
-<meta property="og:url" content="https://sdatygerberg.co.za/page-shell/"><meta property="og:title" content="Tygerberg SDA Kerk"></head><body>
+  return `<!doctype html><html lang="af"><head><title>SDA Struisbaai</title>
+<meta name="description" content="SDA Struisbaai"><link rel="canonical" href="https://sdastruisbaai.co.za/page-shell/">
+<meta property="og:url" content="https://sdastruisbaai.co.za/page-shell/"><meta property="og:title" content="SDA Struisbaai"></head><body>
 <script type="application/json" id="cms-page">${scriptJson({ page: null })}</script>
 <astro-island>${renderPageRoot({ slug: 'page-shell', title: { af: '', en: '' }, eyebrow: { af: '', en: '' }, intro: { af: '', en: '' }, blocks: [] })}</astro-island>
 </body></html>`;
@@ -93,7 +96,7 @@ describe('the homepage', () => {
     assert.equal(await res.text(), builtHome());
   });
 
-  test('a published event shows; a draft never does, nor any audit field', async () => {
+  test('hidden week events and their audit fields stay out of the homepage', async () => {
     const events = [
       ...seedEvents(),
       event({ id: 'gepubliseer', name: { af: 'Gepubliseerde Aand', en: 'Published Evening' }, order: 10 }),
@@ -101,8 +104,8 @@ describe('the homepage', () => {
     ];
     const res = await serveHome(new Request('https://x/'), { ASSETS: assets, CMS: await bucketWith({ events }) }, RENDER, new Date('2026-10-31T08:00:00Z'));
     const html = await res.text();
-    assert.match(section(html, 'week'), /Gepubliseerde Aand/);
-    assert.doesNotMatch(html, /Geheime Konsep|Secret Draft/);
+    assert.deepEqual(payloadIn(html).events, []);
+    assert.doesNotMatch(html, /Gepubliseerde Aand|Published Evening|Geheime Konsep|Secret Draft/);
     assert.doesNotMatch(html, /member@example\.co\.za|updatedBy/);
     assert.equal(res.headers.get('etag'), null, 'no stale validator for rewritten HTML');
   });
@@ -113,19 +116,16 @@ describe('the homepage', () => {
     const res = await serveHome(new Request('https://x/'), { ASSETS: assets, CMS: await bucketWith({ events, heads }) }, RENDER, new Date('2026-10-31T08:00:00Z'));
     const html = await res.text();
     const payload = payloadIn(html);
-    assert.equal(section(html, 'week'), renderWeekSection(payload));
+    assert.doesNotMatch(html, /<section id="week"/, 'the hidden section stays absent after CMS rewriting');
     assert.equal(section(html, 'oor'), renderAboutSection(payload));
-    assert.equal(payload.heads.length, 13);
+    assert.equal(payload.heads.length, 0);
     assert.ok(!payload.heads.some((h) => h.id === heads[1].id), 'a hidden head is not in the payload');
   });
 
-  test('a once-off event disappears the day after its date (fixed clock)', async () => {
-    const events = [...seedEvents(), event({ id: 'eenmalig', kind: 'once', day: undefined, date: '2026-11-05', name: { af: 'Eenmalige Byeenkoms', en: 'One-off' } })];
-    const CMS = await bucketWith({ events });
-    const on = async (iso) => (await (await serveHome(new Request('https://x/'), { ASSETS: assets, CMS }, RENDER, new Date(iso))).text());
-    assert.match(section(await on('2026-11-05T21:59:00Z'), 'week'), /Eenmalige Byeenkoms/, 'still on the night itself, 23:59 SAST');
-    assert.match(section(await on('2026-11-05T21:59:00Z'), 'week'), /5 November 2026/, 'labelled with its date');
-    assert.doesNotMatch(await on('2026-11-05T22:00:00Z'), /Eenmalige Byeenkoms/, 'gone at 00:00 SAST the next day');
+  test('a once-off event expires the day after its date (fixed Johannesburg dates)', () => {
+    const onceOff = event({ id: 'eenmalig', kind: 'once', day: undefined, date: '2026-11-05', name: { af: 'Eenmalige Byeenkoms', en: 'One-off' } });
+    assert.equal(publicEvents([onceOff], '2026-11-05').length, 1, 'still visible on its date');
+    assert.equal(publicEvents([onceOff], '2026-11-06').length, 0, 'expired on the next date');
   });
 
   test('publicEvents orders by `order` and drops drafts', () => {
@@ -179,8 +179,8 @@ describe('CMS pages at /<slug>/', () => {
     const res = await serveCmsPage(new Request('https://x/pastoral-counselling/'), { ASSETS: assets, CMS }, RENDER);
     assert.equal(res.status, 200);
     const html = await res.text();
-    assert.match(html, /<title>Pastorale Berading · Tygerberg SDA Kerk<\/title>/);
-    assert.match(html, /<link rel="canonical" href="https:\/\/sdatygerberg\.co\.za\/pastoral-counselling\/">/);
+    assert.match(html, /<title>Pastorale Berading · SDA Struisbaai<\/title>/);
+    assert.match(html, /<link rel="canonical" href="https:\/\/sdastruisbaai\.co\.za\/pastoral-counselling\/">/);
     assert.match(html, /<h1[^>]*>Pastorale Berading<\/h1>/);
     assert.doesNotMatch(html, /updatedBy|seed"/);
     const payload = JSON.parse(/id="cms-page">([\s\S]*?)<\/script>/.exec(html)[1]);

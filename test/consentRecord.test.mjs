@@ -47,7 +47,7 @@ describe('buildConsentRecord', () => {
     assert.equal(record.email, 'jan@example.com');
     assert.equal(record.phone, '0820000000');
     assert.equal(record.submittedAt, AT);
-    assert.equal(record.source, 'tygerberg-sda-website');
+    assert.equal(record.source, 'sda-struisbaai-website');
     assert.ok(record.id.length > 0);
   });
 
