@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "struisbaai-sda-website",
+  "routes": [{ "pattern": "sdastruisbaai.co.za", "custom_domain": true }],
   "main": "src/worker/index.ts",
   "compatibility_date": "2025-01-09",
   "assets": {

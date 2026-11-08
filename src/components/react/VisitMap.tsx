@@ -21,6 +21,9 @@ export function VisitMap() {
     <section id="besoek" className="scroll-mt-24 bg-tan py-16">
       <div className="mx-auto max-w-content px-7">
         <ChurchVisitMap site={CHURCH_SITE} locale={lang} labels={labels} />
+        <p className="mt-2 text-right text-xs text-slate-muted">
+          Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="text-navy underline underline-offset-2">OpenStreetMap contributors</a> (ODbL).
+        </p>
       </div>
     </section>
   );
