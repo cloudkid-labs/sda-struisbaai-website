@@ -94,15 +94,6 @@ export function Header() {
         <div className="hidden items-center gap-3 lg:flex">
           <LoginLink />
           <LanguageToggle />
-          {/* Straight to /giving, not the #betrokke section. The section is
-              three cards of which giving is one; someone pressing this has
-              already decided. */}
-          <a
-            href={withBase('/giving/')}
-            className="h-8 inline-flex shrink-0 items-center justify-center rounded-pill border border-orange bg-orange px-2.5 sm:px-3.5 text-[11px] sm:text-xs font-bold text-white hover:bg-orange-hover transition-colors"
-          >
-            {t.give}
-          </a>
         </div>
 
         <button
@@ -149,13 +140,6 @@ export function Header() {
           <div className="mt-3 flex flex-wrap items-center gap-2.5 border-t border-subtle pt-3.5">
             <LoginLink onClick={closeMenu} />
             <LanguageToggle />
-            <a
-              href={withBase('/giving/')}
-              onClick={closeMenu}
-              className="h-8 inline-flex shrink-0 items-center justify-center rounded-pill border border-orange bg-orange px-2.5 sm:px-3.5 text-[11px] sm:text-xs font-bold text-white hover:bg-orange-hover transition-colors"
-            >
-              {t.give}
-            </a>
           </div>
         </div>
       )}
