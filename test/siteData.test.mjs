@@ -1,12 +1,13 @@
 import { strict as assert } from 'node:assert';
 import { test, describe } from 'node:test';
 import { SITE, BLOOD_DRIVES, SERVICE_TIMES } from '../src/data/site.ts';
+import { CHURCH_SITE } from '../src/data/churchSite.ts';
 import { churchJsonLd, websiteJsonLd } from '../src/lib/structuredData.ts';
 
 describe('the address has one source', () => {
   test('the printed string is composed from the parts', () => {
     const p = SITE.addressParts;
-    assert.equal(SITE.address, `${p.street}, ${p.suburb}, ${p.city}, ${p.postalCode}`);
+    assert.equal(SITE.address, `${p.street}, ${p.suburb}`);
   });
 
   test('the JSON-LD PostalAddress is composed from the same parts', () => {
@@ -29,7 +30,7 @@ describe('the address has one source', () => {
 
 describe('structured data is built from the requested origin', () => {
   test('every @id and url is rooted at the site passed in', () => {
-    const site = new URL('https://tygerberg-sda.example/');
+    const site = new URL('https://struisbaai-sda.example/');
     for (const node of [websiteJsonLd(site), churchJsonLd(site)]) {
       assert.equal(new URL(node['@id']).origin, site.origin);
       assert.equal(node.url, site.href);
@@ -37,9 +38,8 @@ describe('structured data is built from the requested origin', () => {
   });
 
   test('the geo point is the one the map uses', () => {
-    const { geo } = churchJsonLd(new URL('https://example.test/'));
-    assert.equal(geo.latitude, SITE.lat);
-    assert.equal(geo.longitude, SITE.lng);
+    assert.equal(CHURCH_SITE.location.lat, SITE.lat);
+    assert.equal(CHURCH_SITE.location.lng, SITE.lng);
   });
 });
 

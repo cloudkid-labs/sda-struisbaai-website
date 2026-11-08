@@ -300,7 +300,7 @@ describe('handleContact delivery — C-31, C-34', () => {
     assert.equal(webhookCalls.length, 1);
     const payload = JSON.parse(webhookCalls[0].body);
     assert.equal(payload.consent, true);
-    assert.equal(payload.source, 'tygerberg-sda-website');
+    assert.equal(payload.source, 'sda-struisbaai-website');
     assert.ok(payload.submittedAt);
     assert.ok(!('consentRecordId' in payload));
   });
