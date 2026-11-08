@@ -4,6 +4,23 @@ Website for the Struisbaai and Bredasdorp Seventh-day Adventist church community
 
 Astro static output, React islands, Tailwind CSS, TypeScript, and a Cloudflare Worker.
 
+## Shared SDA site core
+
+This church keeps its own site repository, styling, CMS data, and Worker. It
+uses `@cloudkid-labs/sda-church-site-core` for the shared church configuration,
+visit map UX, and safe CMS slug/link rules. The richer Struisbaai CMS and member
+features remain site-owned because they include church-specific board and
+content workflows. `sda-church-site-template` remains the starter for new
+churches; this repo adopts its core-package update and build workflow.
+
+GitHub Packages access is required for local installs and Actions. Set
+`NODE_AUTH_TOKEN` locally to a token with `read:packages`; in GitHub, either
+grant this repository Actions access to the core package or set
+`GH_PACKAGES_READ_TOKEN` as both an Actions and Dependabot secret. Do not commit
+the token. Enable repository auto-merge and protect `main` with the
+`Build Struisbaai site / build` and `Require review for major core updates /
+major-core-review` checks.
+
 ## Run locally
 
 ```sh
@@ -25,7 +42,7 @@ npm test
 
 The `devtest` Worker uses `https://struisbaai-sda.cloudkid.link`. It is a no-index preview with no email or R2 bindings. Run the GitHub Actions workflow manually or push a `devtest-*` tag to deploy the current commit. Set the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` first.
 
-Production deployment is not configured. The church's production domain, contact details, board accounts, social channels, and content need confirmation before production services are enabled. The extracted site still contains Tygerberg-specific copy and contact values; review and replace those before public launch. Do not add Tygerberg mail addresses, R2 buckets, OAuth accounts, or other infrastructure to this repository.
+The church confirmed `sdastruisbaai.co.za` as its production domain. The production Worker route and Cloudflare zone still need to be configured before publishing there. Contact details, board accounts, social channels, and content also need confirmation before production services are enabled. The extracted site still contains Tygerberg-specific copy and contact values; review and replace those before public launch. Do not add Tygerberg mail addresses, R2 buckets, OAuth accounts, or other infrastructure to this repository.
 
 ## Site content
 
