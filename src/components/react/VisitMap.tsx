@@ -1,7 +1,11 @@
 import { ChurchVisitMap } from '@cloudkid-labs/sda-church-site-core/react';
+import { isVisible } from '@cloudkid-labs/sda-church-site-core';
 import { useLanguage } from '../../context/LanguageContext';
 import { homeCopy } from '../../data/homeCopy';
 import { CHURCH_SITE } from '../../data/churchSite';
+import { UI_CONFIG } from '../../data/uiConfig';
+
+const visitMapSite = { ...CHURCH_SITE, visibility: UI_CONFIG.visibility };
 
 export function VisitMap() {
   const { lang } = useLanguage();
@@ -20,10 +24,10 @@ export function VisitMap() {
   return (
     <section id="besoek" className="scroll-mt-24 bg-tan py-16">
       <div className="mx-auto max-w-content px-7">
-        <ChurchVisitMap site={CHURCH_SITE} locale={lang} labels={labels} />
-        <p className="mt-2 text-right text-xs text-slate-muted">
+        <ChurchVisitMap site={visitMapSite} locale={lang} labels={labels} visibilityPrefix="home.visit-map" />
+        {isVisible(UI_CONFIG, 'home.visit-map.attribution-note') && <p className="mt-2 text-right text-xs text-slate-muted">
           © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="text-navy underline underline-offset-2">OpenStreetMap contributors</a>
-        </p>
+        </p>}
       </div>
     </section>
   );
