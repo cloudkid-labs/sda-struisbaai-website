@@ -1,0 +1,59 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "struisbaai-sda-website",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2025-01-09",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/*", "!/images/hod/fallback/*"]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": true,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "vars": {
+    "LIVE_CHECK_CRON": "* 9-12 * * 6",
+    "LIVE_CHECK_TZ": "Africa/Johannesburg",
+    "TURNSTILE_HOSTNAMES": "",
+    "BOARD_ALLOWED_EMAILS": "",
+    "BOARD_SEND_AS": "",
+    "BOARD_ADMIN_EMAILS": "",
+    "BOARD_ADMIN_ONLY_EMAILS": "",
+    "BOARD_MAIL": "off"
+  },
+  "define": {
+    "import.meta.env": "{\"BASE_URL\":\"/\"}"
+  },
+  "env": {
+    "devtest": {
+      "name": "struisbaai-sda-website-devtest",
+      "routes": [{ "pattern": "struisbaai-sda.cloudkid.link", "custom_domain": true }],
+      "define": {
+        "import.meta.env": "{\"BASE_URL\":\"/\"}"
+      },
+      "vars": {
+        "LIVE_CHECK_CRON": "* 9-12 * * 6",
+        "LIVE_CHECK_TZ": "Africa/Johannesburg",
+        "TURNSTILE_HOSTNAMES": "struisbaai-sda.cloudkid.link",
+        "BOARD_ALLOWED_EMAILS": "",
+        "BOARD_SEND_AS": "",
+        "BOARD_ADMIN_EMAILS": "",
+        "BOARD_ADMIN_ONLY_EMAILS": "",
+        "BOARD_MAIL": "off"
+      }
+    }
+  }
+}
