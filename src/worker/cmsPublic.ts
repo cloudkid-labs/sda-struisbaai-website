@@ -85,18 +85,11 @@ export function rewriteHome(
   const week = findElement(html, /<section id="week"/, 'section');
   const events = findElement(html, /<section id="geleenthede"/, 'section');
   const about = findElement(html, /<section id="oor"/, 'section');
-  if (!week || !events || !about) return null;
-  const weekHtml = render.week(payload);
-  const eventsHtml = render.events(payload);
-  const aboutHtml = render.about(payload);
-
-  // Back to front, so earlier offsets stay valid.
-  const edits: [[number, number], string][] = [
-    [script.body, scriptJson(payload)],
-    [week, weekHtml],
-    [events, eventsHtml],
-    [about, aboutHtml],
-  ];
+  // Visibility config may remove any of these sections from the built page.
+  const edits: [[number, number], string][] = [[script.body, scriptJson(payload)]];
+  if (week) edits.push([week, render.week(payload)]);
+  if (events) edits.push([events, render.events(payload)]);
+  if (about) edits.push([about, render.about(payload)]);
   edits.sort((a, b) => b[0][0] - a[0][0]);
   let out = html;
   for (const [range, content] of edits) out = replaceRange(out, range, content);

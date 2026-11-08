@@ -5,17 +5,19 @@ import { Logo } from './Logo';
 import { LanguageToggle } from './LanguageToggle';
 import { withBase } from '../../lib/base';
 import { FEATURE_FLAGS } from '../../data/featureFlags';
+import { UI_CONFIG } from '../../data/uiConfig';
+import { isVisible } from '@cloudkid-labs/sda-church-site-core';
 
 type NavKey = 'navAbout' | 'navBeliefs' | 'navMinistries' | 'navEvents' | 'navVisit' | 'navConnect' | 'navResources';
 
-const navLinks: { key: NavKey; href: string }[] = [
-  ...(FEATURE_FLAGS.departmentHeads ? [{ key: 'navAbout' as const, href: '#oor' }] : []),
-  { key: 'navBeliefs', href: '#glo' },
-  { key: 'navMinistries', href: '#week' },
-  { key: 'navEvents', href: '#geleenthede' },
-  { key: 'navVisit', href: '#besoek' },
-  { key: 'navConnect', href: '#betrokke' },
-  { key: 'navResources', href: '#hulpbronne' },
+const navLinks: { key: NavKey; href: string; visibility: string }[] = [
+  ...(FEATURE_FLAGS.departmentHeads ? [{ key: 'navAbout' as const, href: '#oor', visibility: 'home.department-heads' }] : []),
+  { key: 'navBeliefs', href: '#glo', visibility: 'home.beliefs' },
+  { key: 'navMinistries', href: '#week', visibility: 'home.this-week' },
+  { key: 'navEvents', href: '#geleenthede', visibility: 'home.events' },
+  { key: 'navVisit', href: '#besoek', visibility: 'home.visit-map' },
+  { key: 'navConnect', href: '#betrokke', visibility: 'home.get-involved' },
+  { key: 'navResources', href: '#hulpbronne', visibility: 'home.resources' },
 ];
 
 function LoginLink({ onClick, className = '' }: { onClick?: () => void; className?: string }) {
@@ -37,6 +39,7 @@ export function Header() {
   const t = homeCopy[lang];
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
+  const visibleNavLinks = navLinks.filter((link) => isVisible(UI_CONFIG, link.visibility));
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -70,33 +73,35 @@ export function Header() {
     };
   }, [menuOpen]);
 
+  if (!isVisible(UI_CONFIG, 'site.header')) return null;
+
   return (
     <header className="sticky top-0 z-50 border-b border-subtle bg-cream/90 backdrop-blur">
       <div className="mx-auto flex max-w-content items-center justify-between gap-4 px-5 py-3">
-        <a href="#top" className="flex items-center gap-3">
-          <Logo size={46} />
-          <div className="leading-tight">
-            <div className="font-serif text-2xl font-semibold leading-tight text-navy">Struisbaai</div>
-            <div className="text-[10.5px] uppercase tracking-[.14em] text-slate-muted">
+        {isVisible(UI_CONFIG, 'site.header.brand') && <a href="#top" className="flex items-center gap-3">
+          {isVisible(UI_CONFIG, 'site.header.brand.logo') && <Logo size={46} />}
+          {(isVisible(UI_CONFIG, 'site.header.brand.name') || isVisible(UI_CONFIG, 'site.header.brand.description')) && <div className="leading-tight">
+            {isVisible(UI_CONFIG, 'site.header.brand.name') && <div className="font-serif text-2xl font-semibold leading-tight text-navy">Struisbaai</div>}
+            {isVisible(UI_CONFIG, 'site.header.brand.description') && <div className="text-[10.5px] uppercase tracking-[.14em] text-slate-muted">
               {lang === 'af' ? 'Sewendedag Adventiste Kerk' : 'Seventh-day Adventist Church'}
-            </div>
-          </div>
-        </a>
+            </div>}
+          </div>}
+        </a>}
 
-        <nav className="hidden items-center gap-4 text-sm font-medium lg:flex">
-          {navLinks.map((link) => (
+        {isVisible(UI_CONFIG, 'site.header.navigation') && <nav className="hidden items-center gap-4 text-sm font-medium lg:flex">
+          {visibleNavLinks.map((link) => (
             <a key={link.href} href={link.href} className="text-ink hover:text-navy">
               {t[link.key]}
             </a>
           ))}
-        </nav>
+        </nav>}
 
         <div className="hidden items-center gap-3 lg:flex">
-          <LoginLink />
-          <LanguageToggle />
+          {isVisible(UI_CONFIG, 'site.header.login') && <LoginLink />}
+          {isVisible(UI_CONFIG, 'site.header.language-toggle') && <LanguageToggle />}
         </div>
 
-        <button
+        {isVisible(UI_CONFIG, 'site.header.menu-toggle') && <button
           type="button"
           aria-label={menuOpen ? (lang === 'af' ? 'Sluit kieslys' : 'Close menu') : lang === 'af' ? 'Open kieslys' : 'Open menu'}
           aria-expanded={menuOpen}
@@ -120,13 +125,13 @@ export function Header() {
               }`}
             />
           </span>
-        </button>
+        </button>}
       </div>
 
-      {menuOpen && (
+      {menuOpen && isVisible(UI_CONFIG, 'site.header.mobile-navigation') && (
         <div className="border-t border-subtle bg-cream px-5 py-4 lg:hidden">
-          <nav className="flex flex-col gap-1 text-sm font-medium">
-            {navLinks.map((link) => (
+          {isVisible(UI_CONFIG, 'site.header.navigation') && <nav className="flex flex-col gap-1 text-sm font-medium">
+            {visibleNavLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -136,10 +141,10 @@ export function Header() {
                 {t[link.key]}
               </a>
             ))}
-          </nav>
+          </nav>}
           <div className="mt-3 flex flex-wrap items-center gap-2.5 border-t border-subtle pt-3.5">
-            <LoginLink onClick={closeMenu} />
-            <LanguageToggle />
+            {isVisible(UI_CONFIG, 'site.header.login') && <LoginLink onClick={closeMenu} />}
+            {isVisible(UI_CONFIG, 'site.header.language-toggle') && <LanguageToggle />}
           </div>
         </div>
       )}

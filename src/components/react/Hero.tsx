@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { isVisible } from '@cloudkid-labs/sda-church-site-core';
+import { UI_CONFIG } from '../../data/uiConfig';
 import { homeCopy } from '../../data/homeCopy';
 import { SITE } from '../../data/site';
 import type { LatestVideo } from '../../lib/latestVideo';
@@ -115,33 +117,35 @@ export function Hero({ latestVideo = null, youtubeEnabled }: { latestVideo?: Lat
     ? `https://www.youtube.com/watch?v=${video.videoId}&list=${UPLOADS_LIST}`
     : SITE.youtubeStreamsUrl;
 
+  if (!isVisible(UI_CONFIG, 'home.hero')) return null;
+
   return (
     <section className="mx-auto grid max-w-content grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] items-center gap-13 px-7 pb-10 pt-15">
       <div>
-        <div className="mb-5 text-xs font-bold uppercase tracking-[.16em] text-orange">
+        {isVisible(UI_CONFIG, 'home.hero.eyebrow') && <div className="mb-5 text-xs font-bold uppercase tracking-[.16em] text-orange">
           {t.heroEyebrow}
-        </div>
+        </div>}
         {/* The largest thing on the page, and the one line that has to land
             before anything else does. The clamp keeps it from crowding a
             narrow phone while letting it carry the hero on a desktop. */}
-        <h1 className="mb-5 text-balance font-serif text-[clamp(40px,5.6vw,68px)] font-medium leading-[1.05] tracking-[-.018em] text-ink">
+        {isVisible(UI_CONFIG, 'home.hero.title') && <h1 className="mb-5 text-balance font-serif text-[clamp(40px,5.6vw,68px)] font-medium leading-[1.05] tracking-[-.018em] text-ink">
           {t.heroTitle}
-        </h1>
-        <p className="mb-7 max-w-[460px] text-[17px] leading-relaxed text-slate">{t.heroSub}</p>
-        <div className="flex flex-wrap gap-3.5">
-          <a
+        </h1>}
+        {isVisible(UI_CONFIG, 'home.hero.subtitle') && <p className="mb-7 max-w-[460px] text-[17px] leading-relaxed text-slate">{t.heroSub}</p>}
+        {isVisible(UI_CONFIG, 'home.hero.ctas') && <div className="flex flex-wrap gap-3.5">
+          {isVisible(UI_CONFIG, 'home.hero.visit-cta') && <a
             href={SITE.directionsUrl}
             target="_blank"
             rel="noopener"
             className="rounded-pill bg-navy px-6.5 py-3.5 text-[15px] font-semibold text-white hover:bg-navy-deep"
           >
             {t.ctaVisit}
-          </a>
+          </a>}
           {/* Only while a broadcast is actually running: the rest of the week
               this invited people to a stream that was not there. It links to
               the broadcast the API named, falling back to the channel's live
               tab when the answer arrived without an id. */}
-          {youtubeEnabled && isLive && (
+          {isVisible(UI_CONFIG, 'home.hero.live-cta') && youtubeEnabled && isLive && (
             <a
               href={watchUrl ?? SITE.youtubeLiveUrl}
               target="_blank"
@@ -152,10 +156,10 @@ export function Hero({ latestVideo = null, youtubeEnabled }: { latestVideo?: Lat
               {t.ctaWatch}
             </a>
           )}
-        </div>
+        </div>}
       </div>
 
-      {youtubeEnabled && <div id="stroom" className="scroll-mt-24">
+      {youtubeEnabled && isVisible(UI_CONFIG, 'home.hero.video') && <div id="stroom" className="scroll-mt-24">
         <div className="overflow-hidden rounded-card-lg bg-navy-deep shadow-deep">
           {/* An adaptive preview, not a bare iframe, and the shape is forced by
               measurement rather than taste. Google's consent flow redirect-
@@ -270,7 +274,7 @@ export function Hero({ latestVideo = null, youtubeEnabled }: { latestVideo?: Lat
             )}
           </div>
           <div className="flex items-center gap-3 p-4">
-            {youtubeEnabled && isLive && (
+            {isVisible(UI_CONFIG, 'home.hero.video.status') && youtubeEnabled && isLive && (
               /* Status, not an action — so no orange fill, which in this bar
                  would read as a second button beside the real one. */
               <div className="flex items-center gap-2 rounded-pill bg-white/10 px-3 py-1.5 text-[11px] font-extrabold tracking-[.08em] text-white">
@@ -281,7 +285,7 @@ export function Hero({ latestVideo = null, youtubeEnabled }: { latestVideo?: Lat
                 {t.liveLabel}
               </div>
             )}
-            <a
+            {isVisible(UI_CONFIG, 'home.hero.video.replay') && <a
               href={SITE.youtubeStreamsUrl}
               target="_blank"
               rel="noopener"
@@ -290,7 +294,7 @@ export function Hero({ latestVideo = null, youtubeEnabled }: { latestVideo?: Lat
               className="ml-auto rounded-pill bg-orange px-4.5 py-2 text-[12.5px] font-bold text-white hover:bg-orange-hover"
             >
               {t.tabReplay}
-            </a>
+            </a>}
           </div>
         </div>
       </div>}

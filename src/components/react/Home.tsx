@@ -16,6 +16,8 @@ import { FirstVisit } from './FirstVisit';
 import { VisitMap } from './VisitMap';
 import { Footer } from './Footer';
 import { FEATURE_FLAGS } from '../../data/featureFlags';
+import { UI_CONFIG } from '../../data/uiConfig';
+import { isVisible } from '@cloudkid-labs/sda-church-site-core';
 
 export function Home({ latestVideo = null }: { latestVideo?: LatestVideo | null }) {
   // The week and the department heads come from the page's payload, never a
@@ -31,20 +33,20 @@ export function Home({ latestVideo = null }: { latestVideo?: LatestVideo | null 
         {/* The landmark starts after the header so the skip link actually skips
             the nav — that is the whole point of it. */}
         <main id="main" className="flex-1">
-          <Hero latestVideo={latestVideo} youtubeEnabled={FEATURE_FLAGS.youtubeSection} />
-          <ServiceTimesStrip />
-          <ThisWeek data={cms} />
-          <EventPages data={cms} />
-          {FEATURE_FLAGS.departmentHeads ? (
+          {isVisible(UI_CONFIG, 'home.hero') && <Hero latestVideo={latestVideo} youtubeEnabled={FEATURE_FLAGS.youtubeSection} />}
+          {isVisible(UI_CONFIG, 'home.service-times') && <ServiceTimesStrip />}
+          {isVisible(UI_CONFIG, 'home.this-week') && <ThisWeek data={cms} />}
+          {isVisible(UI_CONFIG, 'home.events') && <EventPages data={cms} />}
+          {isVisible(UI_CONFIG, 'home.department-heads') && (FEATURE_FLAGS.departmentHeads ? (
             <AboutCarousel heads={cms.heads} cdnEnabled={cms.build.imageCdn} />
           ) : (
             <section id="oor" hidden aria-hidden="true" />
-          )}
-          <BeliefsSummary />
-          <GetInvolved />
-          <Resources />
-          <FirstVisit />
-          <VisitMap />
+          ))}
+          {isVisible(UI_CONFIG, 'home.beliefs') && <BeliefsSummary />}
+          {isVisible(UI_CONFIG, 'home.get-involved') && <GetInvolved />}
+          {isVisible(UI_CONFIG, 'home.resources') && <Resources />}
+          {isVisible(UI_CONFIG, 'home.first-visit') && <FirstVisit />}
+          {isVisible(UI_CONFIG, 'home.visit-map') && <VisitMap />}
         </main>
         <Footer />
       </div>
