@@ -1,6 +1,7 @@
 import { useLanguage } from '../../context/LanguageContext';
 import { homeCopy } from '../../data/homeCopy';
 import { SITE } from '../../data/site';
+import { withBase } from '../../lib/base';
 
 export function VisitMap() {
   const { lang } = useLanguage();
@@ -28,16 +29,14 @@ export function VisitMap() {
           </a>
         </div>
 
-        <a
-          href={SITE.directionsUrl}
-          target="_blank"
-          rel="noopener"
-          className="flex min-h-[300px] flex-col items-center justify-center gap-3 rounded-card-lg bg-navy p-8 text-center text-white transition-colors hover:bg-navy-deep"
-        >
-          <span className="text-xs font-bold uppercase tracking-[.16em] text-orange">Google Maps</span>
-          <span className="font-serif text-2xl">Struisbaai Library Hall</span>
-          <span className="text-sm text-blue-pale">{t.directionsCta} ↗</span>
-        </a>
+        <div className="relative min-h-[300px] overflow-hidden rounded-card-lg">
+          <iframe
+            src={withBase('/map/')}
+            title="Map to Struisbaai Library Hall"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full border-0"
+          />
+        </div>
       </div>
     </section>
   );

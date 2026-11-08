@@ -29,6 +29,10 @@ export const SITE = {
   fullName: 'SDA Struisbaai Church',
   addressParts: ADDRESS,
   address: `${ADDRESS.street}, ${ADDRESS.suburb}`,
+  // Coordinates for Struisbaai Public Library from the Western Cape Library
+  // Service contact list; the church meets at the adjacent Library Hall.
+  lat: -34.783174,
+  lng: 20.033341,
   directionsUrl: 'https://maps.app.goo.gl/2iestQRD6bgygWqt6?g_st=ic',
   youtubeChannelUrl: 'https://www.youtube.com/@SDATygerberg',
   // /streams, by the church's instruction: the services are streamed, so the
