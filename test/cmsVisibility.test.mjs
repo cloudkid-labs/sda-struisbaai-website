@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildHomePayload, scriptJson } from '../src/lib/cms/public.ts';
+import { buildHomePayload } from '../src/lib/cms/payload.ts';
+import { scriptJson } from '../src/lib/cms/public.ts';
 import { findElement, rewriteHome } from '../src/worker/cmsPublic.ts';
 import { renderAboutSection, renderEventsSection, renderWeekSection } from '../src/worker/cmsRender.tsx';
 

@@ -26,6 +26,6 @@ describe('social links', () => {
       assert.equal(footer.includes(url), false);
       assert.equal(connect.includes(url), false);
     }
-    assert.doesNotMatch(footer, />Volg ons<\/);
+    assert.doesNotMatch(footer, /Volg ons/);
   });
 });
