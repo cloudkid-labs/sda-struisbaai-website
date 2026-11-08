@@ -2,6 +2,9 @@ name: Deploy Struisbaai devtest (Cloudflare)
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'devtest-*'
 
 permissions:
   contents: read
