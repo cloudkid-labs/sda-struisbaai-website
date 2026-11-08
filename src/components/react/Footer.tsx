@@ -27,8 +27,8 @@ export function Footer() {
     <footer className="bg-navy-deep text-blue-pale">
       <div className="mx-auto grid max-w-content grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-8 px-7 py-11">
         {isVisible(UI_CONFIG, 'site.footer.brand') && <div>
-          {isVisible(UI_CONFIG, 'site.footer.brand.logo') && <div className="mb-3 flex items-center gap-2.5">
-            <Logo size={30} />
+          {(isVisible(UI_CONFIG, 'site.footer.brand.logo') || isVisible(UI_CONFIG, 'site.footer.brand.name')) && <div className="mb-3 flex items-center gap-2.5">
+            {isVisible(UI_CONFIG, 'site.footer.brand.logo') && <Logo size={30} />}
             {isVisible(UI_CONFIG, 'site.footer.brand.name') && <span className="font-serif text-base text-white">SDA Struisbaai</span>}
           </div>}
           {isVisible(UI_CONFIG, 'site.footer.brand.blurb') && <p className="text-sm">{t.footerBlurb}</p>}
