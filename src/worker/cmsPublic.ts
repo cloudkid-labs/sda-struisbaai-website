@@ -111,7 +111,7 @@ export function rewritePage(html: string, page: Page, render: Pick<Renderers, 'p
   const root = findElement(html, /<div id="cms-page-root"/, 'div');
   if (!script || !root) return null;
 
-  const title = `${pub.title.af} · SDA Struisbaai`;
+  const title = `${pub.title.af} · Struisbaai SDA`;
   const description = pub.intro.af || pub.title.af;
   const path = `/${pub.slug}/`;
   const edits: [[number, number], string][] = [

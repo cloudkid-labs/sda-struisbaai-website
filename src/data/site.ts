@@ -24,9 +24,9 @@ export const MEMBERS_SITES = {
 } as const;
 
 export const SITE = {
-  name: 'SDA Struisbaai',
+  name: 'Struisbaai SDA',
   /** The congregation's full name, for the map popup and the page titles. */
-  fullName: 'SDA Struisbaai Church',
+  fullName: 'Struisbaai SDA Church',
   addressParts: ADDRESS,
   address: `${ADDRESS.street}, ${ADDRESS.suburb}`,
   // Coordinates for Struisbaai Public Library from the Western Cape Library

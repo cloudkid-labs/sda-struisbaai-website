@@ -183,7 +183,7 @@ export function Hero({ latestVideo = null, youtubeEnabled }: { latestVideo?: Lat
             {playing && video ? (
               <iframe
                 src={`https://www.youtube.com/embed/${video.videoId}?list=${UPLOADS_LIST}&autoplay=1`}
-                title="SDA Struisbaai YouTube"
+                title="Struisbaai SDA YouTube"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen

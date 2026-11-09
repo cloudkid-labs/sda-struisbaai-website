@@ -32,9 +32,9 @@ function builtHome() {
 }
 
 function builtShell() {
-  return `<!doctype html><html lang="af"><head><title>SDA Struisbaai</title>
-<meta name="description" content="SDA Struisbaai"><link rel="canonical" href="https://sdastruisbaai.co.za/page-shell/">
-<meta property="og:url" content="https://sdastruisbaai.co.za/page-shell/"><meta property="og:title" content="SDA Struisbaai"></head><body>
+  return `<!doctype html><html lang="af"><head><title>Struisbaai SDA</title>
+<meta name="description" content="Struisbaai SDA"><link rel="canonical" href="https://sdastruisbaai.co.za/page-shell/">
+<meta property="og:url" content="https://sdastruisbaai.co.za/page-shell/"><meta property="og:title" content="Struisbaai SDA"></head><body>
 <script type="application/json" id="cms-page">${scriptJson({ page: null })}</script>
 <astro-island>${renderPageRoot({ slug: 'page-shell', title: { af: '', en: '' }, eyebrow: { af: '', en: '' }, intro: { af: '', en: '' }, blocks: [] })}</astro-island>
 </body></html>`;
@@ -179,7 +179,7 @@ describe('CMS pages at /<slug>/', () => {
     const res = await serveCmsPage(new Request('https://x/pastoral-counselling/'), { ASSETS: assets, CMS }, RENDER);
     assert.equal(res.status, 200);
     const html = await res.text();
-    assert.match(html, /<title>Pastorale Berading · SDA Struisbaai<\/title>/);
+    assert.match(html, /<title>Pastorale Berading · Struisbaai SDA<\/title>/);
     assert.match(html, /<link rel="canonical" href="https:\/\/sdastruisbaai\.co\.za\/pastoral-counselling\/">/);
     assert.match(html, /<h1[^>]*>Pastorale Berading<\/h1>/);
     assert.doesNotMatch(html, /updatedBy|seed"/);

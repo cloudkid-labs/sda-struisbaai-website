@@ -21,8 +21,8 @@ export function websiteJsonLd(site: URL) {
   return {
     '@type': 'WebSite',
     '@id': new URL('#website', site).href,
-    name: 'SDA Struisbaai',
-    alternateName: ['SDA Struisbaai Church'],
+    name: 'Struisbaai SDA',
+    alternateName: ['Struisbaai SDA Church'],
     url: site.href,
     inLanguage: 'af-ZA',
     publisher: { '@id': new URL('#church', site).href },
@@ -31,7 +31,7 @@ export function websiteJsonLd(site: URL) {
 
 /**
  * schema.org description of the congregation, emitted on every page, so a search
- * engine can answer "when does SDA Struisbaai meet". Restates what is already on
+ * engine can answer "when does Struisbaai SDA meet". Restates what is already on
  * the page; both read from src/data/site.ts, so there is nothing to sync.
  *
  * That last sentence used to be false. Every address field was a literal here,
@@ -43,8 +43,8 @@ export function churchJsonLd(site: URL) {
     '@type': 'Church',
     // The congregation, not the page — every page emits the same node.
     '@id': new URL('#church', site).href,
-    name: 'SDA Struisbaai Church',
-    alternateName: ['SDA Struisbaai'],
+    name: 'Struisbaai SDA Church',
+    alternateName: ['Struisbaai SDA'],
     url: site.href,
     address: {
       '@type': 'PostalAddress',

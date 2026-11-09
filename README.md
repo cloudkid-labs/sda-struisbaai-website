@@ -1,4 +1,4 @@
-# SDA Struisbaai Website
+# Struisbaai SDA Website
 
 Website for the Struisbaai and Bredasdorp Seventh-day Adventist church community. This repository was extracted from the nested `sda-struisbaai-website` app in `cloudkid-labs/sda-tygerberg-website`; its source history is preserved.
 
