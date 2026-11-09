@@ -29,7 +29,7 @@ export function Footer() {
         {isVisible(UI_CONFIG, 'site.footer.brand') && <div>
           {(isVisible(UI_CONFIG, 'site.footer.brand.logo') || isVisible(UI_CONFIG, 'site.footer.brand.name')) && <div className="mb-3 flex items-center gap-2.5">
             {isVisible(UI_CONFIG, 'site.footer.brand.logo') && <Logo size={30} />}
-            {isVisible(UI_CONFIG, 'site.footer.brand.name') && <span className="font-serif text-base text-white">SDA Struisbaai</span>}
+            {isVisible(UI_CONFIG, 'site.footer.brand.name') && <span className="font-serif text-base text-white">Struisbaai SDA</span>}
           </div>}
           {isVisible(UI_CONFIG, 'site.footer.brand.blurb') && <p className="text-sm">{t.footerBlurb}</p>}
         </div>}
@@ -55,7 +55,7 @@ export function Footer() {
       </div>
       {isVisible(UI_CONFIG, 'site.footer.credits') && <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-content flex-wrap items-center gap-4 px-7 py-5 text-xs">
-          {isVisible(UI_CONFIG, 'site.footer.credits.copyright') && <span>© {year} SDA Struisbaai</span>}
+          {isVisible(UI_CONFIG, 'site.footer.credits.copyright') && <span>© {year} Struisbaai SDA</span>}
           {isVisible(UI_CONFIG, 'site.footer.credits.builder') && <a href="https://cloudkid.link" target="_blank" rel="noopener" className="font-semibold text-orange hover:text-white">
             {t.footerCreditBuilder}
           </a>}

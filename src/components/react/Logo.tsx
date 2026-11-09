@@ -19,7 +19,7 @@ export function Logo({ size = 38 }: LogoProps) {
       src={withBase('/oauth-logo.png')}
       width={size}
       height={size}
-      alt="SDA Struisbaai"
+      alt="Struisbaai SDA"
       className="flex-none rounded-[22%] object-cover"
       style={{ width: size, height: size }}
     />

@@ -10,7 +10,7 @@ export function SubPageFooter({ backHome }: { backHome: string }) {
       <div className="relative z-10 mx-auto flex max-w-content-narrow items-center justify-between gap-2 sm:gap-4 px-3 sm:px-7 py-6 sm:py-8">
         <a href={withBase('/')} className="flex items-center gap-2 sm:gap-2.5 shrink min-w-0">
           <Logo size={28} />
-          <span className="font-serif text-sm sm:text-base text-white truncate">SDA Struisbaai</span>
+          <span className="font-serif text-sm sm:text-base text-white truncate">Struisbaai SDA</span>
         </a>
         <a
           href={withBase('/')}
