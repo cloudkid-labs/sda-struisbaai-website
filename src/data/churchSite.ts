@@ -18,6 +18,7 @@ export const CHURCH_SITE = defineChurchSite({
     lat: SITE.lat,
     lng: SITE.lng,
     directionsUrl: SITE.directionsUrl,
+    appleMapsUrl: SITE.appleMapsUrl,
     markerUrl: '/map-marker.svg',
   },
   serviceTimes: SERVICE_TIMES.map((time) => ({
