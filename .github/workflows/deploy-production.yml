@@ -42,9 +42,23 @@ jobs:
           PUBLIC_APP_COMMIT: ${{ github.sha }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
 
+      - name: Check contact email recipients
+        env:
+          CONTACT_EMAIL_TO: ${{ secrets.CONTACT_EMAIL_TO }}
+          CONTACT_EMAIL_FROM: ${{ secrets.CONTACT_EMAIL_FROM }}
+        run: |
+          test -n "$CONTACT_EMAIL_TO"
+          test -n "$CONTACT_EMAIL_FROM"
+
       - name: Deploy production Worker
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+          secrets: |
+            CONTACT_EMAIL_TO
+            CONTACT_EMAIL_FROM
+        env:
+          CONTACT_EMAIL_TO: ${{ secrets.CONTACT_EMAIL_TO }}
+          CONTACT_EMAIL_FROM: ${{ secrets.CONTACT_EMAIL_FROM }}

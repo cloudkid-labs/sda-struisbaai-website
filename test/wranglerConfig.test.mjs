@@ -16,6 +16,7 @@ describe('Struisbaai deployment isolation', () => {
     assert.deepEqual(config.routes, [{ pattern: 'sdastruisbaai.co.za', custom_domain: true }]);
     assert.ok(!('send_email' in config));
     assert.ok(!('r2_buckets' in config));
+    assert.deepEqual(config.secrets.required, ['BREVO_API_KEY', 'CONTACT_EMAIL_TO', 'CONTACT_EMAIL_FROM']);
     assert.equal(config.vars.BOARD_MAIL, 'off');
   });
 
@@ -25,6 +26,7 @@ describe('Struisbaai deployment isolation', () => {
     assert.ok(devtest.routes.some((r) => r.pattern === 'struisbaai-sda.cloudkid.link' && r.custom_domain));
     assert.ok(!('send_email' in devtest));
     assert.ok(!('r2_buckets' in devtest));
+    assert.deepEqual(devtest.secrets.required, ['BREVO_API_KEY', 'CONTACT_EMAIL_TO', 'CONTACT_EMAIL_FROM']);
     assert.equal(devtest.vars.BOARD_MAIL, 'off');
     assert.equal(devtest.vars.BOARD_ALLOWED_EMAILS, '');
   });

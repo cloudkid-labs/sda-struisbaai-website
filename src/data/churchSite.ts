@@ -31,7 +31,7 @@ export const CHURCH_SITE = defineChurchSite({
     { slug: 'beliefs', title: { af: 'Geloofspunte', en: 'Beliefs' } },
     { slug: 'bible-studies', title: { af: 'Bybelstudies', en: 'Bible studies' } },
     { slug: 'blood-bank', title: { af: 'Bloedbank', en: 'Blood bank' } },
-    { slug: 'connect', title: { af: 'Kontak', en: 'Connect' } },
+    { slug: 'connect', title: { af: 'Gebedsversoek', en: 'Prayer Request' } },
     { slug: 'giving', title: { af: 'Bydraes', en: 'Giving' } },
     { slug: 'youth', title: { af: 'Jeug', en: 'Youth' } },
   ],

@@ -12,7 +12,7 @@ export type ContactEnv = ContactEmailEnv &
     // it is a delivery address, and a public one invites spam. Unset answers
     // `not-configured` and the form says so.
     //
-    // The fallback channel now: email is tried first when it is configured — see
+    // The fallback channel: Brevo is tried first when it is configured — see
     // `deliver()` below and C-31.
     CONTACT_WEBHOOK_URL?: string;
     /**
@@ -131,17 +131,15 @@ async function forward(url: string, payload: unknown): Promise<boolean> {
  * Delivers one submission, preferring email. Returns the channel that carried
  * it, or `null` if every configured channel failed.
  *
- * Email first because it needs no third-party service and lands in an inbox a
- * person already reads; the webhook stays as the fallback so a deploy without
- * the `send_email` binding still works. Both configured means the webhook is
- * only reached when email fails — deliberately not both at once, which would
- * double every enquiry. CONCERNS.md C-31.
+ * Brevo first because it lands in the church's inbox; the webhook stays as the
+ * fallback. Both configured means the webhook is only reached when Brevo
+ * fails — deliberately not both at once, which would double every enquiry.
+ * CONCERNS.md C-31.
  */
 async function deliver(
   env: ContactEnv,
   clean: Record<string, string>,
   lang: Lang,
-  origin: string,
 ): Promise<{ via: ContactVia | null; consentStored?: boolean }> {
   const submittedAt = new Date().toISOString();
 
@@ -187,7 +185,7 @@ async function deliver(
     }
   }
 
-  if (await sendContactEmail(env, clean, submittedAt, storedId, origin)) {
+  if (await sendContactEmail(env, clean, submittedAt, storedId)) {
     return { via: 'email', consentStored };
   }
   // Not a silent fallback: the send error itself was already logged inside
@@ -217,7 +215,7 @@ async function deliver(
 
 /** Is any delivery channel set up at all? Decides `not-configured` vs a failure. */
 function isConfigured(env: ContactEnv): boolean {
-  const email = Boolean(env.EMAIL && env.CONTACT_EMAIL_TO && env.CONTACT_EMAIL_FROM);
+  const email = Boolean(env.BREVO_API_KEY && env.CONTACT_EMAIL_TO && env.CONTACT_EMAIL_FROM);
   return email || Boolean(env.CONTACT_WEBHOOK_URL);
 }
 
@@ -273,7 +271,7 @@ export async function handleContact(request: Request, env: ContactEnv): Promise<
     return json({ ok: false, outcome: 'not-configured' }, 503);
   }
 
-  const { via, consentStored } = await deliver(env, clean, lang, new URL(request.url).origin);
+  const { via, consentStored } = await deliver(env, clean, lang);
 
   // Structured log lines — addresses and outcomes only, never field values
   // (the submission is personal data; C-20). Three lines per enquiry, each
@@ -285,7 +283,7 @@ export async function handleContact(request: Request, env: ContactEnv): Promise<
     `contact: outcome=${via ? 'forwarded' : 'forward-error'} via=${via ?? 'none'}` +
       ` consentStored=${consentStored ?? 'unbound'}` +
       ` consentBinding=${env.CONSENT ? 'bound' : 'unbound'}` +
-      ` emailBinding=${env.EMAIL ? 'bound' : 'unbound'}` +
+      ` brevo=${env.BREVO_API_KEY && env.CONTACT_EMAIL_TO && env.CONTACT_EMAIL_FROM ? 'configured' : 'unconfigured'}` +
       ` webhookBinding=${env.CONTACT_WEBHOOK_URL ? 'bound' : 'unbound'}` +
       ` turnstile=${env.TURNSTILE_SECRET_KEY ? 'enforced' : 'absent'}`,
   );

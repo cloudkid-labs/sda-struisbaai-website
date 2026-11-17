@@ -26,17 +26,12 @@ const post = (body, headers = {}) =>
   });
 
 function emailEnv(over = {}) {
-  const sent = [];
   return {
-    sent,
+    sent: brevoCalls,
     env: {
+      BREVO_API_KEY: 'test-api-key',
       CONTACT_EMAIL_TO: 'to@church.test',
       CONTACT_EMAIL_FROM: 'from@church.test',
-      EMAIL: {
-        async send(msg) {
-          sent.push(msg);
-        },
-      },
       ...over,
     },
   };
@@ -60,18 +55,19 @@ const realError = console.error;
 let logged;
 let errored;
 let webhookCalls;
+let brevoCalls;
 
 beforeEach(() => {
   logged = [];
   errored = [];
   webhookCalls = [];
+  brevoCalls = [];
   console.log = (...args) => logged.push(args.join(' '));
   console.error = (...args) => errored.push(args.join(' '));
-  // Fixture bytes for the login screenshots the notification attaches —
-  // never the network in unit tests.
   globalThis.fetch = async (url, init) => {
-    if (String(url).includes('/images/login/')) {
-      return new Response(new Uint8Array([137, 80, 78, 71]), { status: 200 });
+    if (String(url) === 'https://api.brevo.com/v3/smtp/email') {
+      brevoCalls.push({ url: String(url), body: JSON.parse(init.body) });
+      return Response.json({ messageId: '<test@example.com>' }, { status: 201 });
     }
     return realFetch(url, init);
   };
@@ -83,17 +79,17 @@ afterEach(() => {
   globalThis.fetch = realFetch;
 });
 
-/** Webhook OK; Turnstile siteverify OK. Dispatches on URL. */
-function mockNet({ webhookOk = true, webhookThrows = false } = {}) {
+/** Brevo, webhook, and Turnstile responses are captured without network access. */
+function mockNet({ webhookOk = true, webhookThrows = false, brevoOk = true, brevoThrows = false } = {}) {
   globalThis.fetch = async (url, init) => {
     const u = String(url);
+    if (u === 'https://api.brevo.com/v3/smtp/email') {
+      brevoCalls.push({ url: u, body: JSON.parse(init.body) });
+      if (brevoThrows) throw new Error('Brevo unavailable');
+      return Response.json({}, { status: brevoOk ? 201 : 500 });
+    }
     if (u.includes('challenges.cloudflare.com')) {
       return Response.json({ success: true, action: 'contact' });
-    }
-    // Login screenshots the notification attaches — fixture bytes, never a
-    // webhook call and never the network.
-    if (u.includes('/images/login/')) {
-      return new Response(new Uint8Array([137, 80, 78, 71]), { status: 200 });
     }
     webhookCalls.push({ url: u, body: init?.body });
     if (webhookThrows) throw new Error('net down');
@@ -215,33 +211,27 @@ describe('handleContact delivery — C-31, C-34', () => {
     assert.equal(json.consentStored, undefined);
   });
 
-  test('the clerk gets a login notification, the archive the full enquiry', async () => {
+  test('the prayer request mail includes the consent record', async () => {
     const store = r2();
-    const { env, sent } = emailEnv({ CONSENT: store.bucket, CONTACT_EMAIL_BCC: 'archive@church.test' });
+    const { env, sent } = emailEnv({ CONSENT: store.bucket, CONTACT_EMAIL_TO: 'one@church.test,two@church.test' });
     const json = await (await handleContact(post(goodBody()), env)).json();
     assert.equal(json.consentStored, true);
     assert.equal(sent.length, 2);
     const record = JSON.parse(store.puts[0].body);
-    // Notification: names who and what, never the message or contact details.
-    assert.equal(sent[0].to, 'to@church.test');
-    assert.match(sent[0].subject, /meld aan om te lees/);
-    assert.match(sent[0].text, /https:\/\/sdatygerberg\.co\.za\/login/);
-    assert.equal(sent[0].attachments.length, 3);
-    assert.ok(sent[0].text.includes('Hallo'));
-    assert.ok(sent[0].text.includes('jan@example.co.za'));
-    assert.ok(sent[0].text.includes('Tygerberg SDA Kerk'));
-    // Archive: the full record, tied to the consent id as before.
-    assert.equal(sent[1].to, 'archive@church.test');
-    assert.match(sent[1].text, new RegExp(`Toestemmingsrekord: ${record.id}`));
-    assert.match(sent[1].text, /Hallo/);
+    assert.deepEqual(sent.map((call) => call.body.to[0].email), ['one@church.test', 'two@church.test']);
+    assert.ok(sent.every((call) => call.body.to.length === 1));
+    assert.match(sent[0].body.subject, /Gebedsversoek/);
+    assert.match(sent[0].body.textContent, new RegExp(`Toestemmingsrekord: ${record.id}`));
+    assert.match(sent[0].body.textContent, /Hallo/);
+    assert.match(sent[0].body.textContent, /Struisbaai SDA Kerk/);
   });
 
-  test('no archive send where no archive address is set', async () => {
+  test('one recipient gets one notification', async () => {
     const { env, sent } = emailEnv();
     const json = await (await handleContact(post(goodBody()), env)).json();
     assert.equal(json.outcome, 'forwarded');
     assert.equal(sent.length, 1);
-    assert.match(sent[0].text, /login om dit in die inkassie te lees/);
+    assert.match(sent[0].body.textContent, /Gebedsversoek/);
   });
 
   test('the inbox copy lands in SUBMISSIONS with the full message — C-69', async () => {
@@ -285,13 +275,8 @@ describe('handleContact delivery — C-31, C-34', () => {
   });
 
   test('webhook fallback carries consent facts when email fails', async () => {
-    mockNet();
+    mockNet({ brevoOk: false });
     const { env } = emailEnv({
-      EMAIL: {
-        async send() {
-          throw Object.assign(new Error('no'), { code: 'E_FAIL' });
-        },
-      },
       CONTACT_WEBHOOK_URL: 'https://hooks.test/inbox',
     });
     const json = await (await handleContact(post(goodBody()), env)).json();
@@ -306,14 +291,9 @@ describe('handleContact delivery — C-31, C-34', () => {
   });
 
   test('webhook payload points at the stored record where one exists', async () => {
-    mockNet();
+    mockNet({ brevoOk: false });
     const store = r2();
     const { env } = emailEnv({
-      EMAIL: {
-        async send() {
-          throw new Error('no');
-        },
-      },
       CONTACT_WEBHOOK_URL: 'https://hooks.test/inbox',
       CONSENT: store.bucket,
     });
@@ -324,13 +304,8 @@ describe('handleContact delivery — C-31, C-34', () => {
   });
 
   test('forward-error when every configured channel fails', async () => {
-    mockNet({ webhookOk: false });
+    mockNet({ webhookOk: false, brevoOk: false });
     const { env } = emailEnv({
-      EMAIL: {
-        async send() {
-          throw new Error('no');
-        },
-      },
       CONTACT_WEBHOOK_URL: 'https://hooks.test/inbox',
     });
     const res = await handleContact(post(goodBody()), env);
@@ -339,17 +314,12 @@ describe('handleContact delivery — C-31, C-34', () => {
   });
 
   test('forward-error when email fails and no webhook exists', async () => {
-    const { env } = emailEnv({
-      EMAIL: {
-        async send() {
-          throw new Error('no');
-        },
-      },
-    });
+    mockNet({ brevoOk: false });
+    const { env } = emailEnv();
     assert.equal((await (await handleContact(post(goodBody()), env)).json()).outcome, 'forward-error');
   });
 
-  test('webhook-only deploy delivers without any email binding', async () => {
+  test('webhook-only deploy delivers without Brevo configured', async () => {
     mockNet();
     const res = await handleContact(post(goodBody()), { CONTACT_WEBHOOK_URL: 'https://hooks.test/inbox' });
     const json = await res.json();

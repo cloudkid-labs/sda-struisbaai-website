@@ -7,8 +7,8 @@ export type MailSendEnv = AuthEnv & {
   /** Brevo v3 API key. Absent answers `not-configured`, like every secret here. */
   BREVO_API_KEY?: string;
   /**
-   * Role addresses the board may send as, comma-separated — the same shape as
-   * CONTACT_EMAIL_BCC. Public role addresses, so a var, not a secret (ADR-0001).
+   * Role addresses the board may send as, comma-separated. Public role
+   * addresses, so a var, not a secret (ADR-0001).
    */
   MAIL_SEND_FROM?: string;
   /** The /kerkraad bucket. Unset skips the Sent copy, never the send. */
