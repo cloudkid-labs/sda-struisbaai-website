@@ -31,7 +31,7 @@ export type WeekEntry = {
 };
 
 /** A practical question a first-time visitor has, and its answer. */
-export type FirstVisitEntry = { q: string; a: string };
+export type FirstVisitEntry = { id?: string; q: string; a: string };
 
 export type HomeCopy = {
   navAbout: string;
@@ -180,6 +180,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
         a: 'Daar is beveiligde parkering op die perseel, maar dit is beperk. Kom gerus ’n bietjie vroeër as jy seker wil wees van ’n plek.',
       },
       {
+        id: 'children',
         q: 'Is daar iets vir die kinders?',
         a: `Ja — kinderprogramme loop van ${SABBATH_GROUPS.start} tot ${SABBATH_GROUPS.end}, terwyl Sabbatskool en Lesstudie aan die gang is. Daarna sluit die kinders by die gemeente aan vir die ${DIVINE_SERVICE.af}.`,
       },
@@ -295,6 +296,7 @@ export const homeCopy: Record<Lang, HomeCopy> = {
         a: 'There is secured parking on the premises, but it is limited. Arrive a little early if you want to be sure of a bay.',
       },
       {
+        id: 'children',
         q: 'Is there anything for the children?',
         a: `Yes — children’s programmes run from ${SABBATH_GROUPS.start} to ${SABBATH_GROUPS.end}, while Sabbath School and Lesson Study are on. The children then join the congregation for the ${DIVINE_SERVICE.en}.`,
       },
