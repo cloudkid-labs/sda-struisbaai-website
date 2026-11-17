@@ -150,11 +150,11 @@ describe('handleMailSend delivery', () => {
     assert.ok(!/Gestuur deur/.test(sent.textContent));
     // HTML alternative: the message escaped, then the church signature.
     assert.ok(sent.htmlContent.includes('Hallo, hier is die inligting.'));
-    assert.ok(sent.htmlContent.includes('Tygerberg SDA Kerk'));
+    assert.ok(sent.htmlContent.includes('Struisbaai SDA Kerk'));
     assert.ok(sent.htmlContent.includes(`mailto:${FROM}`));
     // Logo hotlinked, not CID-attached: Brevo's attachment schema has no
     // contentId, so a cid: reference can never resolve.
-    assert.ok(sent.htmlContent.includes('src="https://sdatygerberg.co.za/oauth-logo.png"'));
+    assert.ok(sent.htmlContent.includes('src="https://sdastruisbaai.co.za/oauth-logo.png"'));
     assert.ok(!('attachment' in sent));
   });
 
