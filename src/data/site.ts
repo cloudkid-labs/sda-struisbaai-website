@@ -34,6 +34,7 @@ export const SITE = {
   lat: -34.783174,
   lng: 20.033341,
   directionsUrl: 'https://maps.app.goo.gl/2iestQRD6bgygWqt6?g_st=ic',
+  appleMapsUrl: 'https://maps.apple.com/?ll=-34.783174,20.033341&q=Struisbaai%20Library%20Hall',
   youtubeChannelUrl: 'https://www.youtube.com/@SDATygerberg',
   // /streams, by the church's instruction: the services are streamed, so the
   // streams tab is where the latest content actually is — /featured and
