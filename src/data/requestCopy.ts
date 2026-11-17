@@ -65,43 +65,43 @@ export type FormCopy = {
 export const requestTopics: Record<RequestTopic, Record<Lang, TopicCopy>> = {
   connect: {
     af: {
-      pageTitle: 'Verbind · Tygerberg SDA Kerk',
+      pageTitle: 'Gebedsversoek · SDA Struisbaai',
       pageDescription:
-        'Het jy ’n vraag of wil jy met iemand by Tygerberg SDA Kerk gesels? Stuur ’n boodskap en ons stel jou aan die regte persoon voor.',
-      eyebrow: 'Raak Betrokke',
-      heading: 'Verbind met ons',
-      sub: 'Het jy ’n vraag, wil jy met iemand gesels, of soek jy gebed? Laat weet ons hier onder en ons stel jou aan die regte persoon in die gemeente voor.',
+        'Deel jou gebedsversoek met SDA Struisbaai. Ons bid graag saam met jou.',
+      eyebrow: 'Gebedsversoek',
+      heading: 'Ons bid graag saam met jou',
+      sub: 'Vertel ons waarvoor jy gebed nodig het. Die gemeente bid graag saam met jou.',
       expectations: [
-        'Ons stuur jou versoek aan die persoon wat die beste kan help.',
-        'Iemand tree gewoonlik binne ’n paar dae met jou in verbinding.',
-        'Daar is geen koste en geen verpligting nie.',
+        'Ons stuur jou gebedsversoek aan die gemeente.',
+        'Deel net die besonderhede wat jy gemaklik voel om te gee.',
+        'Ons gebruik jou besonderhede net om op jou versoek te reageer.',
       ],
-      messageLabel: 'Jou boodskap',
-      messagePlaceholder: 'Waarmee kan ons help?',
-      submit: 'Stuur boodskap',
+      messageLabel: 'Jou gebedsversoek',
+      messagePlaceholder: 'Waarvoor kan ons saam met jou bid?',
+      submit: 'Stuur gebedsversoek',
     },
     en: {
-      pageTitle: 'Connect · Tygerberg SDA Church',
+      pageTitle: 'Prayer Request · SDA Struisbaai',
       pageDescription:
-        'Have a question or want to talk to someone at Tygerberg SDA Church? Send a message and we’ll introduce you to the right person.',
-      eyebrow: 'Get Involved',
-      heading: 'Connect with us',
-      sub: 'Have a question, want to talk to someone, or looking for prayer? Let us know below and we’ll introduce you to the right person in the congregation.',
+        'Share your prayer request with SDA Struisbaai. We would be glad to pray with you.',
+      eyebrow: 'Prayer Request',
+      heading: 'We would be glad to pray with you',
+      sub: 'Tell us what you would like prayer for. The congregation would be glad to pray with you.',
       expectations: [
-        'We pass your request to the person best placed to help.',
-        'Someone usually gets back to you within a few days.',
-        'There’s no cost and no obligation.',
+        'We send your prayer request to the congregation.',
+        'Share only the details you feel comfortable giving.',
+        'We use your details only to respond to your request.',
       ],
-      messageLabel: 'Your message',
-      messagePlaceholder: 'How can we help?',
-      submit: 'Send message',
+      messageLabel: 'Your prayer request',
+      messagePlaceholder: 'What would you like us to pray for?',
+      submit: 'Send prayer request',
     },
   },
   'bible-study': {
     af: {
-      pageTitle: 'Bybelstudies · Tygerberg SDA Kerk',
+      pageTitle: 'Bybelstudies · SDA Struisbaai',
       pageDescription:
-        'Vra ’n gratis Bybel- of doopstudie aan by Tygerberg SDA Kerk — by jou tuiste, by die kerk, of aanlyn.',
+        'Vra ’n gratis Bybel- of doopstudie aan by SDA Struisbaai — by jou tuiste, by die kerk, of aanlyn.',
       eyebrow: 'Bybelstudies',
       heading: 'Vra ’n gratis Bybelstudie aan',
       sub: 'Ons bied gratis Bybel- en doopstudies aan — by jou tuiste, by die kerk, of aanlyn. Jy kies die tempo en die onderwerpe.',
@@ -116,9 +116,9 @@ export const requestTopics: Record<RequestTopic, Record<Lang, TopicCopy>> = {
       submit: 'Vra ’n studie aan',
     },
     en: {
-      pageTitle: 'Bible Studies · Tygerberg SDA Church',
+      pageTitle: 'Bible Studies · SDA Struisbaai',
       pageDescription:
-        'Request a free Bible or baptismal study from Tygerberg SDA Church — in your home, at church, or online.',
+        'Request a free Bible or baptismal study from SDA Struisbaai — in your home, at church, or online.',
       eyebrow: 'Bible Studies',
       heading: 'Request a free Bible study',
       sub: 'We offer free Bible and baptismal studies — in your home, at church, or online. You set the pace and the topics.',
@@ -144,7 +144,7 @@ export const requestFormCopy: Record<Lang, FormCopy> = {
     contactHint: 'Gee ten minste een — dis hoe ons jou antwoord.',
     privacyHeading: 'Hoe ons jou inligting gebruik',
     privacyBody:
-      'Tygerberg Sewendedag Adventiste Kerk gebruik die besonderhede wat jy hier verskaf slegs om op hierdie versoek te reageer. Ons deel dit nie met derde partye nie en gebruik dit nie vir enigiets anders nie. Vra enige tyd dat ons jou besonderhede verwyder.',
+      'SDA Struisbaai gebruik jou besonderhede net om op hierdie versoek te reageer. Brevo verwerk die boodskap namens die gemeente om dit per e-pos af te lewer. Ons gebruik jou besonderhede nie vir bemarking nie. Vra enige tyd dat ons dit verwyder.',
     consentLabel:
       'Ek gee toestemming dat die kerk my besonderhede mag gebruik om my oor hierdie versoek te kontak.',
     submitting: 'Besig om te stuur…',
@@ -185,7 +185,7 @@ export const requestFormCopy: Record<Lang, FormCopy> = {
     contactHint: 'Give at least one — it’s how we reply to you.',
     privacyHeading: 'How we use your information',
     privacyBody:
-      'Tygerberg Seventh-day Adventist Church uses the details you provide here only to respond to this request. We don’t share them with third parties or use them for anything else. Ask us to delete your details at any time.',
+      'SDA Struisbaai uses your details only to respond to this request. Brevo processes the message on the congregation’s behalf to deliver it by email. We do not use your details for marketing. You can ask us to delete them at any time.',
     consentLabel: 'I consent to the church using my details to contact me about this request.',
     submitting: 'Sending…',
     successHeading: 'Thank you — we’ve received your request.',

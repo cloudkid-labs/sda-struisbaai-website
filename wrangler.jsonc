@@ -35,6 +35,9 @@
     "BOARD_ADMIN_ONLY_EMAILS": "",
     "BOARD_MAIL": "off"
   },
+  "secrets": {
+    "required": ["BREVO_API_KEY", "CONTACT_EMAIL_TO", "CONTACT_EMAIL_FROM"]
+  },
   "define": {
     "import.meta.env": "{\"BASE_URL\":\"/\"}"
   },
@@ -54,6 +57,9 @@
         "BOARD_ADMIN_EMAILS": "",
         "BOARD_ADMIN_ONLY_EMAILS": "",
         "BOARD_MAIL": "off"
+      },
+      "secrets": {
+        "required": ["BREVO_API_KEY", "CONTACT_EMAIL_TO", "CONTACT_EMAIL_FROM"]
       }
     }
   }
