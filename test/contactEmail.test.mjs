@@ -68,6 +68,9 @@ describe('sendContactEmail configuration', () => {
     assert.match(mail.textContent, /Toestemmingsrekord: rec-123/);
     assert.match(mail.textContent, /Struisbaai SDA Kerk/);
     assert.match(mail.textContent, /website@sdastruisbaai\.co\.za/);
+    assert.match(mail.htmlContent, /https:\/\/sdastruisbaai\.co\.za\/oauth-logo\.png/);
+    assert.match(mail.htmlContent, /Struisbaai SDA Kerk/);
+    assert.doesNotMatch(mail.htmlContent, /Tygerberg|sdatygerberg/i);
   });
 
   test('escapes visitor text in the HTML alternative', async () => {

@@ -1,6 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import type { ContactTopic } from './contact';
+import { mailHtml, LOGO_REMOTE_URL } from './signature';
 
 export type ContactEmailEnv = {
   BREVO_API_KEY?: string;
@@ -20,7 +21,7 @@ function headerSafe(value: string, max: number): string {
   return flattened.length > max ? `${flattened.slice(0, max - 1)}…` : flattened;
 }
 
-function body(fields: Record<string, string>, submittedAt: string, from: string, recordId?: string): string {
+function body(fields: Record<string, string>, submittedAt: string, recordId?: string): string {
   return [
     'Nuwe versoek vanaf die Struisbaai SDA-webwerf.',
     '',
@@ -35,19 +36,7 @@ function body(fields: Record<string, string>, submittedAt: string, from: string,
     'Toestemming gegee: ja',
     `Ontvang: ${submittedAt}`,
     ...(recordId ? [`Toestemmingsrekord: ${recordId}`] : []),
-    '',
-    '—',
-    'Struisbaai SDA Kerk',
-    from,
-    'Struisbaai Library Hall, Struisbaai',
   ].join('\n');
-}
-
-function htmlBody(text: string): string {
-  const escaped = text.replace(/[&<>]/g, (character) =>
-    character === '&' ? '&amp;' : character === '<' ? '&lt;' : '&gt;',
-  );
-  return `<pre style="white-space:pre-wrap">${escaped}</pre>`;
 }
 
 async function sendToBrevo(
@@ -67,8 +56,8 @@ async function sendToBrevo(
         to: [{ email: to }],
         ...(replyTo ? { replyTo } : {}),
         subject,
-        textContent: text,
-        htmlContent: htmlBody(text),
+        textContent: `${text}\n\n—\nStruisbaai SDA Kerk\n${from}\nStruisbaai Library Hall, Struisbaai\nsdastruisbaai.co.za`,
+        htmlContent: mailHtml(text, from, LOGO_REMOTE_URL),
       }),
       signal: AbortSignal.timeout(BREVO_TIMEOUT_MS),
     });
@@ -95,7 +84,7 @@ export async function sendContactEmail(
 
   const label = TOPIC_LABELS[fields.topic as ContactTopic] ?? 'Navraag';
   const subject = `${label} — ${headerSafe(fields.name, 60)}`;
-  const text = body(fields, submittedAt, CONTACT_EMAIL_FROM, recordId);
+  const text = body(fields, submittedAt, recordId);
   const replyTo = fields.email ? { email: fields.email, name: headerSafe(fields.name, 80) } : undefined;
 
   console.log(`contact send: start recipients=${recipients.length} topic=${fields.topic}`);
