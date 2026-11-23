@@ -27,7 +27,7 @@
  *              about the build and only produces noise. Both production and
  *              devtest are Workers now (C-61), so no workflow passes this flag;
  *              it stays for a bare `astro build` served locally.
- *   --expect-version <v>  poll /health until it reports version <v> — the
+ *   --expect-version <v>  poll /api/health until it reports version <v> — the
  *              post-deploy gate (C-63). Without it the version is unchecked.
  *   --wait-version <s>  how long to keep polling for the expected version
  *              (default 120). The whole-run deadline below stretches to fit.
@@ -49,7 +49,7 @@ const expectedCanonicalHost = canonicalHostIdx === -1
   ? (base ? new URL(base).host : '')
   : process.argv[canonicalHostIdx + 1] ?? (base ? new URL(base).host : '');
 
-// The post-deploy gate (C-63): /health must report this version within the
+// The post-deploy gate (C-63): /api/health must report this version within the
 // wait budget. Passed by the workflows — package.json on devtest and the CI
 // worker job, the resolved release version on production.
 const expectVersionIdx = process.argv.indexOf('--expect-version');
@@ -169,10 +169,10 @@ async function get(path, init = {}) {
 
 console.log(`\nSmoke-testing ${base}\n`);
 
-/* ---- deployed version: /health (C-63) ---------------------------------- */
+/* ---- deployed version: /api/health (C-63) ---------------------------------- */
 console.log('health');
 if (!expectVersion) {
-  notes.push('Version check skipped: no --expect-version, /health is unchecked.');
+  notes.push('Version check skipped: no --expect-version, /api/health is unchecked.');
   console.log('  – skipped, no expected version given');
 } else {
   const deadline = Date.now() + waitVersionSecs * 1000;
@@ -180,7 +180,7 @@ if (!expectVersion) {
   let blockedStreak = 0;
   for (;;) {
     try {
-      const res = await get('/health');
+      const res = await get('/api/health');
       // A response arrived, so the edge is talking to this client — reset
       // the blocked streak even if the version is still stale.
       blockedStreak = 0;
@@ -196,7 +196,7 @@ if (!expectVersion) {
         } else if (body.version !== expectVersion) {
           lastSeen = `version ${body.version}, want ${expectVersion}`;
         } else {
-          pass('/health', `version ${body.version}`);
+          pass('/api/health', `version ${body.version}`);
           break;
         }
       }
@@ -207,13 +207,13 @@ if (!expectVersion) {
       // blocked polls in a row means waiting longer changes nothing, so skip
       // with a note instead of burning the whole budget proving it.
       if (/^HTTP 40[39]|^HTTP 429/.test(err.message) && ++blockedStreak >= 2) {
-        notes.push(`/health unchecked: the edge answered ${err.message} — this client is blocked, not the deploy stale.`);
+        notes.push(`/api/health unchecked: the edge answered ${err.message} — this client is blocked, not the deploy stale.`);
         console.log('  – skipped, edge is blocking this client');
         break;
       }
     }
     if (Date.now() >= deadline || outOfTime()) {
-      fail('/health', `still not serving ${expectVersion} after ${waitVersionSecs}s — last seen: ${lastSeen}`);
+      fail('/api/health', `still not serving ${expectVersion} after ${waitVersionSecs}s — last seen: ${lastSeen}`);
       break;
     }
     await new Promise((r) => setTimeout(r, 5000));
