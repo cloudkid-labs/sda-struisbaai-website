@@ -3,7 +3,7 @@ import { test, describe, beforeEach } from 'node:test';
 
 /*
  * Routing that must stay in step with wrangler.jsonc run_worker_first (C-60):
- * masters fall back unless the transformer asks (C-51), /health answers JSON,
+ * masters fall back unless the transformer asks (C-51), /api/health answers JSON,
  * unknown paths reach ASSETS untouched.
  */
 
@@ -25,7 +25,7 @@ globalThis.fetch = async () =>
   Response.json({
     items: [{ id: { videoId: 'e7rN_P9-n2I' } }],
   });
-const { default: worker } = await import('../src/worker/index.ts');
+const { default: worker, usesSettings } = await import('../src/worker/index.ts');
 globalThis.fetch = realFetch;
 
 let assetHits;
@@ -75,12 +75,22 @@ describe('headshot masters — C-51', () => {
 });
 
 describe('worker branches — C-60, C-63', () => {
-  test('/health answers the versioned JSON signal with no-store', async () => {
-    const res = await worker.fetch(new Request('https://x/health'), env(), ctx());
+  test('/api/health answers with the same versioned JSON signal without loading settings', async () => {
+    assert.equal(usesSettings('/api/health'), false);
+    const res = await worker.fetch(new Request('https://x/api/health'), env(), ctx());
     const json = await res.json();
+    assert.equal(res.status, 200);
     assert.equal(json.status, 204);
     assert.ok(json.version);
+    assert.match(res.headers.get('content-type') ?? '', /application\/json/i);
     assert.match(res.headers.get('cache-control') ?? '', /no-store/i);
+    assert.deepEqual(assetHits, []);
+  });
+
+  test('/health no longer has a Worker health handler', async () => {
+    const res = await worker.fetch(new Request('https://x/health'), env(), ctx());
+    assert.deepEqual(assetHits, ['/health']);
+    assert.equal(await res.text(), 'asset:/health');
   });
 
   test('a non-POST /api/contact is rejected, not proxied', async () => {

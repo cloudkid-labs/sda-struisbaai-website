@@ -79,7 +79,7 @@ export default {
 /** Paths whose handlers read sign-in, send-as, routing or notification config. */
 export function usesSettings(pathname: string): boolean {
   return (
-    pathname.startsWith('/api/') ||
+    (pathname.startsWith('/api/') && pathname !== '/api/health') ||
     pathname.startsWith('/auth/') ||
     isMembersPath(pathname) ||
     isLegacyBoardPath(pathname) ||
@@ -123,12 +123,13 @@ async function route(request: Request, env: Env, ctx: ExecutionContext): Promise
     return env.ASSETS.fetch(new Request(rewritten, request));
   }
 
-  if (pathname === '/health') {
-    // Deployment-health signal: { status: 204, version }. A Worker branch
-    // (not a prerendered static file) so the content-type is real JSON, and
-    // listed in assets.run_worker_first in wrangler.jsonc or the Worker
-    // never sees the request (C-60). Deliberately NOT in the sitemap — it is
-    // infrastructure, not a page. C-63
+  if (pathname === '/api/health') {
+    if (request.method !== 'GET') {
+      return Response.json({ ok: false, error: 'Method not allowed' }, {
+        status: 405,
+        headers: { Allow: 'GET', 'Cache-Control': 'no-store' },
+      });
+    }
     return healthResponse();
   }
 
