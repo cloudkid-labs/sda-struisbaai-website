@@ -1,10 +1,10 @@
 import packageJson from '../../package.json' with { type: 'json' };
 
 /**
- * The deployment-health signal. `GET /health` answers
+ * The deployment-health signal. `GET /api/health` answers
  * `{ "status": 204, "version": "X.Y.Z" }`, where the version is the released
  * version baked in at deploy time — `package.json` is the single source of
- * truth (README "Versioning and releases"), so what /health reports is what
+ * truth (README "Versioning and releases"), so what /api/health reports is what
  * the deploy tags.
  *
  * The body carries `status: 204` as the signal value, served over HTTP 200: a
