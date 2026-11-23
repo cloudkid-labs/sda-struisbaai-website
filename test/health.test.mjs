@@ -21,6 +21,15 @@ describe('APP_VERSION', () => {
   });
 });
 
+describe('post-deploy smoke check', () => {
+  test('polls /api/health and not the retired bare route', () => {
+    const smoke = readFileSync(new URL('../scripts/smoke.mjs', import.meta.url), 'utf8');
+    assert.ok(smoke.includes("get('/api/health')"));
+    assert.ok(!smoke.includes("get('/health')"));
+    assert.ok(smoke.includes("pass('/api/health'"));
+  });
+});
+
 describe('healthResponse', () => {
   test('serves the body as JSON over HTTP 200 with no-store', async () => {
     const res = healthResponse('9.9.9');
