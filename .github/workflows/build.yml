@@ -26,6 +26,8 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+      - name: Validate hosted architecture map Worker
+        run: npx wrangler deploy --dry-run --config wrangler.infra.jsonc --env devtest
         env:
           PUBLIC_INDEXABLE: 'false'
           PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || 'https://sdastruisbaai.co.za' }}

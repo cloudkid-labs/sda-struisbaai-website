@@ -63,6 +63,13 @@ jobs:
           CONTACT_EMAIL_TO: ${{ secrets.CONTACT_EMAIL_TO }}
           CONTACT_EMAIL_FROM: ${{ secrets.CONTACT_EMAIL_FROM }}
 
+      - name: Deploy devtest architecture map
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.infra.jsonc --env devtest
+
       - name: Smoke-test devtest
         timeout-minutes: 8
         env:
