@@ -47,3 +47,7 @@ The church confirmed `sdastruisbaai.co.za` as its production domain, and the def
 ## Site content
 
 Church-specific content is in `src/data/`; preview-only feature switches are in `src/data/featureFlags.ts`. The extracted copy has not yet been fully adapted for Struisbaai. Treat inherited church names, contact details, social links, and page copy as placeholders until the Struisbaai church confirms them.
+
+## Hosted architecture map
+
+The noindex devtest overview is served at [infra.struisbaai-sda.cloudkid.link](https://infra.struisbaai-sda.cloudkid.link/). It follows the current preview configuration; production remains gated on domain activation and content review.
